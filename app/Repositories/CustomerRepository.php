@@ -12,20 +12,27 @@ class CustomerRepository{
             //->where('active',1)
             ->get()
             ->map(function ($customer) {
-                return [
-                    'name' => $customer->name,
-                    'address' => $customer->address,
-                    'email' => $customer->email,
-                    'status' => $customer->active,
-                    'date' => $customer->updated_at->diffForHumans()
-                ];
+               $this->format($customer);
             });
     }
 
     public function findById($customerid){
-        return Customer::where('id', $customerid)
+        $customer =  Customer::where('id', $customerid)
         ->where('active', 0)
         ->firstOrFail();
+
+        return $this->format($customer);
+    }
+
+    //use this to reference from inside this repo
+    protected function format($customer){
+        return [
+            'name' => $customer->name,
+            'address' => $customer->address,
+            'email' => $customer->email,
+            'status' => $customer->active,
+            'date' => $customer->updated_at->diffForHumans()
+        ];
 
     }
 }
